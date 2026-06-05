@@ -38,6 +38,17 @@ $routes = [
     'licenses/view' => ['controller' => 'LicenseController', 'action' => 'view'],
     'licenses/update' => ['controller' => 'LicenseController', 'action' => 'update'],
     'licenses/delete' => ['controller' => 'LicenseController', 'action' => 'delete'],
+    'licenses/renew' => ['controller' => 'LicenseController', 'action' => 'renew'],
+    'licenses/deactivate' => ['controller' => 'LicenseController', 'action' => 'deactivate'],
+    'licenses/reactivate' => ['controller' => 'LicenseController', 'action' => 'reactivate'],
+    'licenses/freeze-seats' => ['controller' => 'LicenseController', 'action' => 'freezeSeats'],
+    'licenses/unfreeze-seats' => ['controller' => 'LicenseController', 'action' => 'unfreezeSeats'],
+    'licenses/unbind-device' => ['controller' => 'LicenseController', 'action' => 'unbindDevice'],
+    'licenses/generate-activation-code' => ['controller' => 'LicenseController', 'action' => 'generateActivationCode'],
+    'licenses/confirm-invoice' => ['controller' => 'LicenseController', 'action' => 'confirmInvoice'],
+    'licenses/renewal-pool' => ['controller' => 'LicenseController', 'action' => 'renewalPool'],
+    'licenses/history' => ['controller' => 'LicenseController', 'action' => 'history'],
+    'licenses/check-expiry' => ['controller' => 'LicenseController', 'action' => 'checkExpiry'],
 ];
 
 // Default route
