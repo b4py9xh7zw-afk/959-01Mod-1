@@ -31,6 +31,14 @@ class Company {
         return $this->db->lastInsertId();
     }
     
+    public function findByName($name) {
+        $sql = "SELECT c.*, ch.name as channel_name 
+                FROM companies c 
+                LEFT JOIN channels ch ON c.channel_id = ch.id 
+                WHERE c.name = :name";
+        return $this->db->fetchOne($sql, [':name' => $name]);
+    }
+    
     public function findById($id) {
         $sql = "SELECT c.*, ch.name as channel_name 
                 FROM companies c 

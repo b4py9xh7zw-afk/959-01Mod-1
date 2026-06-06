@@ -10,28 +10,38 @@ try {
     $db = Database::getInstance();
     $connection = $db->getConnection();
     
-    // Read and execute SQL file
-    $sqlFile = __DIR__ . '/init.sql';
-    if (!file_exists($sqlFile)) {
-        throw new Exception("SQL file not found: {$sqlFile}");
-    }
+    // Read and execute SQL files
+    $sqlFiles = [
+        __DIR__ . '/init.sql',
+        __DIR__ . '/migration_renewal.sql'
+    ];
     
-    $sql = file_get_contents($sqlFile);
-    
-    // Split by semicolon and execute each statement
-    $statements = array_filter(array_map('trim', explode(';', $sql)));
-    
-    foreach ($statements as $statement) {
-        if (!empty($statement) && !preg_match('/^--/', $statement)) {
-            try {
-                $connection->exec($statement);
-            } catch (PDOException $e) {
-                // Ignore errors for duplicate keys, etc.
-                if (strpos($e->getMessage(), 'Duplicate') === false) {
-                    error_log("SQL execution warning: " . $e->getMessage());
+    foreach ($sqlFiles as $sqlFile) {
+        if (!file_exists($sqlFile)) {
+            throw new Exception("SQL file not found: {$sqlFile}");
+        }
+        
+        $sql = file_get_contents($sqlFile);
+        
+        // Split by semicolon and execute each statement
+        $statements = array_filter(array_map('trim', explode(';', $sql)));
+        
+        foreach ($statements as $statement) {
+            if (!empty($statement) && !preg_match('/^--/', $statement)) {
+                try {
+                    $connection->exec($statement);
+                } catch (PDOException $e) {
+                    // Ignore errors for duplicate keys, columns that already exist, etc.
+                    if (strpos($e->getMessage(), 'Duplicate') === false && 
+                        strpos($e->getMessage(), 'already exists') === false &&
+                        strpos($e->getMessage(), 'Unknown column') === false) {
+                        error_log("SQL execution warning ({$sqlFile}): " . $e->getMessage());
+                    }
                 }
             }
         }
+        
+        echo "Executed: " . basename($sqlFile) . "\n";
     }
     
     echo "Database initialized successfully!\n";

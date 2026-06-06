@@ -139,7 +139,7 @@ class LicenseController {
             exit;
         }
         
-        $license = $this->licenseModel->findById($id);
+        $license = $this->licenseModel->findByIdWithDetails($id);
         if (!$license) {
             $_SESSION['error'] = '许可证不存在';
             header('Location: /dashboard/licenses');
@@ -152,6 +152,15 @@ class LicenseController {
             header('Location: /dashboard/licenses');
             exit;
         }
+        
+        $devices = $this->deviceModel->findByLicenseId($id);
+        $invoices = $this->invoiceModel->findByLicenseId($id);
+        $activationCodes = $this->activationCodeModel->findByLicenseId($id);
+        $contracts = $this->contractModel->findByLicenseId($id);
+        $settlements = $this->channelSettlementModel->findByLicenseId($id);
+        
+        $companies = $this->companyModel->findAll(1000, 0);
+        $channels = $this->channelModel->findActive();
         
         require_once __DIR__ . '/../views/licenses/view.php';
     }
@@ -786,6 +795,14 @@ class LicenseController {
         
         $totalPages = ceil($total / $limit);
         
+        $pagination = [
+            'page' => $page,
+            'total_pages' => $totalPages,
+            'total' => $total,
+            'limit' => $limit,
+            'offset' => $offset
+        ];
+        
         $stats = [
             'pending' => $channelId ? $this->renewalPoolModel->countByChannelId($channelId, 'pending') : count($this->renewalPoolModel->findAll('pending', 1000, 0)),
             'in_progress' => $channelId ? $this->renewalPoolModel->countByChannelId($channelId, 'in_progress') : count($this->renewalPoolModel->findAll('in_progress', 1000, 0)),
@@ -808,7 +825,7 @@ class LicenseController {
             exit;
         }
         
-        $license = $this->licenseModel->findById($id);
+        $license = $this->licenseModel->findByIdWithDetails($id);
         if (!$license) {
             $_SESSION['error'] = '许可证不存在';
             header('Location: /dashboard/licenses');
@@ -832,7 +849,8 @@ class LicenseController {
             }
         }
         
-        $history = $this->licenseModel->getHistory($id);
+        $historyData = $this->licenseModel->getHistory($id);
+        $history = $historyData['operation_logs'] ?? [];
         
         require_once __DIR__ . '/../views/licenses/history.php';
     }

@@ -12,9 +12,9 @@ class OperationLog {
         $this->db = Database::getInstance();
     }
     
-    public function log($userId, $action, $actionType = 'other', $description = null, $licenseId = null, $companyId = null) {
-        $sql = "INSERT INTO operation_logs (user_id, company_id, license_id, action, action_type, description, ip_address, user_agent) 
-                VALUES (:user_id, :company_id, :license_id, :action, :action_type, :description, :ip_address, :user_agent)";
+    public function log($userId, $action, $actionType = 'other', $description = null, $licenseId = null, $companyId = null, $oldValue = null, $newValue = null) {
+        $sql = "INSERT INTO operation_logs (user_id, company_id, license_id, action, action_type, description, old_value, new_value, ip_address, user_agent) 
+                VALUES (:user_id, :company_id, :license_id, :action, :action_type, :description, :old_value, :new_value, :ip_address, :user_agent)";
         
         $params = [
             ':user_id' => $userId,
@@ -23,6 +23,8 @@ class OperationLog {
             ':action' => $action,
             ':action_type' => $actionType,
             ':description' => $description,
+            ':old_value' => $oldValue,
+            ':new_value' => $newValue,
             ':ip_address' => $this->getIpAddress(),
             ':user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? null
         ];

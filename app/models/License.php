@@ -13,15 +13,27 @@ class License {
     }
     
     public function create($data) {
-        $sql = "INSERT INTO licenses (license_key, user_id, product_name, status, expires_at, created_at) 
-                VALUES (:license_key, :user_id, :product_name, :status, :expires_at, NOW())";
+        $sql = "INSERT INTO licenses (license_key, user_id, product_name, status, expires_at, 
+                company_id, channel_id, seats, grace_period_days, grace_period_end, 
+                is_frozen, invoice_required, renewal_status, created_at) 
+                VALUES (:license_key, :user_id, :product_name, :status, :expires_at, 
+                :company_id, :channel_id, :seats, :grace_period_days, :grace_period_end, 
+                :is_frozen, :invoice_required, :renewal_status, NOW())";
         
         $params = [
             ':license_key' => $this->generateLicenseKey(),
             ':user_id' => $data['user_id'],
             ':product_name' => $data['product_name'],
             ':status' => $data['status'] ?? 'active',
-            ':expires_at' => $data['expires_at'] ?? null
+            ':expires_at' => $data['expires_at'] ?? null,
+            ':company_id' => $data['company_id'] ?? null,
+            ':channel_id' => $data['channel_id'] ?? null,
+            ':seats' => $data['seats'] ?? 1,
+            ':grace_period_days' => $data['grace_period_days'] ?? 30,
+            ':grace_period_end' => $data['grace_period_end'] ?? null,
+            ':is_frozen' => $data['is_frozen'] ?? 0,
+            ':invoice_required' => $data['invoice_required'] ?? 0,
+            ':renewal_status' => $data['renewal_status'] ?? 'active'
         ];
         
         $this->db->execute($sql, $params);
@@ -106,6 +118,38 @@ class License {
         if (isset($data['user_id'])) {
             $fields[] = "user_id = :user_id";
             $params[':user_id'] = $data['user_id'];
+        }
+        if (isset($data['company_id'])) {
+            $fields[] = "company_id = :company_id";
+            $params[':company_id'] = $data['company_id'];
+        }
+        if (isset($data['channel_id'])) {
+            $fields[] = "channel_id = :channel_id";
+            $params[':channel_id'] = $data['channel_id'];
+        }
+        if (isset($data['seats'])) {
+            $fields[] = "seats = :seats";
+            $params[':seats'] = $data['seats'];
+        }
+        if (isset($data['grace_period_days'])) {
+            $fields[] = "grace_period_days = :grace_period_days";
+            $params[':grace_period_days'] = $data['grace_period_days'];
+        }
+        if (isset($data['grace_period_end'])) {
+            $fields[] = "grace_period_end = :grace_period_end";
+            $params[':grace_period_end'] = $data['grace_period_end'];
+        }
+        if (isset($data['is_frozen'])) {
+            $fields[] = "is_frozen = :is_frozen";
+            $params[':is_frozen'] = $data['is_frozen'];
+        }
+        if (isset($data['invoice_required'])) {
+            $fields[] = "invoice_required = :invoice_required";
+            $params[':invoice_required'] = $data['invoice_required'];
+        }
+        if (isset($data['renewal_status'])) {
+            $fields[] = "renewal_status = :renewal_status";
+            $params[':renewal_status'] = $data['renewal_status'];
         }
         
         if (empty($fields)) {

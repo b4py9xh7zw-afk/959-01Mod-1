@@ -13,14 +13,18 @@ class User {
     }
     
     public function create($data) {
-        $sql = "INSERT INTO users (username, email, password_hash, role, created_at) 
-                VALUES (:username, :email, :password_hash, :role, NOW())";
+        $sql = "INSERT INTO users (username, email, password_hash, role, company_id, channel_id, contact_person, contact_phone, created_at) 
+                VALUES (:username, :email, :password_hash, :role, :company_id, :channel_id, :contact_person, :contact_phone, NOW())";
         
         $params = [
             ':username' => $data['username'],
             ':email' => $data['email'],
             ':password_hash' => password_hash($data['password'], PASSWORD_DEFAULT),
-            ':role' => $data['role'] ?? 'user'
+            ':role' => $data['role'] ?? 'user',
+            ':company_id' => $data['company_id'] ?? null,
+            ':channel_id' => $data['channel_id'] ?? null,
+            ':contact_person' => $data['contact_person'] ?? null,
+            ':contact_phone' => $data['contact_phone'] ?? null
         ];
         
         $this->db->execute($sql, $params);
@@ -71,6 +75,22 @@ class User {
         if (isset($data['role'])) {
             $fields[] = "role = :role";
             $params[':role'] = $data['role'];
+        }
+        if (isset($data['company_id'])) {
+            $fields[] = "company_id = :company_id";
+            $params[':company_id'] = $data['company_id'];
+        }
+        if (isset($data['channel_id'])) {
+            $fields[] = "channel_id = :channel_id";
+            $params[':channel_id'] = $data['channel_id'];
+        }
+        if (isset($data['contact_person'])) {
+            $fields[] = "contact_person = :contact_person";
+            $params[':contact_person'] = $data['contact_person'];
+        }
+        if (isset($data['contact_phone'])) {
+            $fields[] = "contact_phone = :contact_phone";
+            $params[':contact_phone'] = $data['contact_phone'];
         }
         
         if (empty($fields)) {

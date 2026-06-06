@@ -73,12 +73,12 @@ require_once __DIR__ . '/../layouts/header.php';
                                     'create' => 'bg-green-500',
                                     'update' => 'bg-blue-500',
                                     'delete' => 'bg-red-500',
-                                    'renew' => 'bg-emerald-500',
-                                    'deactivate' => 'bg-orange-500',
-                                    'reactivate' => 'bg-purple-500',
+                                    'renewal' => 'bg-emerald-500',
+                                    'suspension' => 'bg-orange-500',
+                                    'activation' => 'bg-purple-500',
                                     'freeze' => 'bg-yellow-500',
                                     'unfreeze' => 'bg-teal-500',
-                                    'unbind' => 'bg-pink-500',
+                                    'unbinding' => 'bg-pink-500',
                                     'generate_code' => 'bg-indigo-500',
                                     'invoice' => 'bg-amber-500',
                                     'settlement' => 'bg-cyan-500',
@@ -101,12 +101,12 @@ require_once __DIR__ . '/../layouts/header.php';
                                                     'create' => '创建',
                                                     'update' => '更新',
                                                     'delete' => '删除',
-                                                    'renew' => '续费',
-                                                    'deactivate' => '停用',
-                                                    'reactivate' => '激活',
+                                                    'renewal' => '续费',
+                                                    'suspension' => '停用',
+                                                    'activation' => '激活',
                                                     'freeze' => '冻结',
                                                     'unfreeze' => '解冻',
-                                                    'unbind' => '解绑',
+                                                    'unbinding' => '解绑',
                                                     'generate_code' => '生成激活码',
                                                     'invoice' => '发票',
                                                     'settlement' => '结算',
@@ -141,8 +141,8 @@ require_once __DIR__ . '/../layouts/header.php';
                                     
                                     <div class="text-right ml-4 flex-shrink-0">
                                         <div class="text-sm text-gray-500"><?php echo date('H:i:s', strtotime($log['created_at'])); ?></div>
-                                        <?php if (!empty($log['operator_name'])): ?>
-                                        <div class="text-xs text-gray-400 mt-1">操作人：<?php echo htmlspecialchars($log['operator_name']); ?></div>
+                                        <?php if (!empty($log['username'])): ?>
+                                        <div class="text-xs text-gray-400 mt-1">操作人：<?php echo htmlspecialchars($log['username']); ?></div>
                                         <?php endif; ?>
                                     </div>
                                 </div>
@@ -186,7 +186,7 @@ function exportHistory() {
             log.action_type,
             log.action ? log.action.replace(/"/g, '""') : '',
             log.description ? log.description.replace(/"/g, '""') : '',
-            log.operator_name || ''
+            log.username || ''
         ].map(field => `"${field}"`).join(',');
         csvContent += row + "\n";
     });

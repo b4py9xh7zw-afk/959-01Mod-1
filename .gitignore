@@ -1,6 +1,5 @@
 # Dependencies
 vendor/
-composer.lock
 
 # Environment
 .env
@@ -20,6 +19,8 @@ Thumbs.db
 # Logs
 *.log
 logs/
+coverage/
+.phpunit.result.cache
 
 # Database
 *.sqlite
@@ -31,3 +32,8 @@ uploads/*
 
 # Docker
 .docker/
+docker-compose.override.yml
+
+# Local agent metadata
+.trae/
+.agents/

@@ -29,6 +29,11 @@ class Channel {
         return $this->db->lastInsertId();
     }
     
+    public function findByName($name) {
+        $sql = "SELECT * FROM channels WHERE name = :name";
+        return $this->db->fetchOne($sql, [':name' => $name]);
+    }
+    
     public function findById($id) {
         $sql = "SELECT * FROM channels WHERE id = :id";
         return $this->db->fetchOne($sql, [':id' => $id]);
